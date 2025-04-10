@@ -1,14 +1,14 @@
 import { PageLayout } from "~/sharedComponents/PageLayout";
 import type { Route } from "../+types/home";
-import { Welcome } from "../welcome/welcome";
+import { PatientsContent } from "~/patients/PatientsContent";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "Patients" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
 
-export default function Home() {
-  return  <PageLayout Content={Welcome}/>;
+export default function Patients() {
+  return  <PageLayout Content={PatientsContent}/>;
 }
