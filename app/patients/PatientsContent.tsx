@@ -14,7 +14,7 @@ import { FloatingButton } from "~/sharedComponents/FloatingButton";
 import { PatientDialog } from "./PatientDialog";
 import { fetchValue, postValue } from "~/constants/utils";
 import type { Appointment, Patient } from "~/constants/interfaces";
-import { DateTime, Interval } from 'luxon'
+import { DateTime, Interval } from "luxon";
 
 export const PatientsContent = () => {
   const [rows, setRows] = useState([] as Patient[]);
@@ -31,29 +31,33 @@ export const PatientsContent = () => {
   ];
 
   const updateTable = () => {
-    fetchValue(`${serverLink}/patients`, setRows);
+    fetchValue(`${serverLink}/patients`, (values: Patient[]) => {
+      setRows(values);
+      fetchValue(`${serverLink}/patients/count`, setPatientsCount);
+    });
   };
-  
 
   //@TODO
-  const handleDate =  useCallback( (ap: Appointment) => {
-    console.log('ap', ap)
-    const newDate =  DateTime.fromFormat(ap.date,"DD'-'LL'-'yyyy''HH':'mm") 
-    console.log('newDate',newDate.toString())
-    const now = DateTime.now()
-    const diff = Interval.fromDateTimes(newDate, now);
-    console.log('diff', diff.length('days'))
+  const handleDate = useCallback(
+    (ap: Appointment) => {
+      console.log("ap", ap);
+      const newDate = DateTime.fromFormat(ap.date, "DD'-'LL'-'yyyy''HH':'mm");
+      console.log("newDate", newDate.toString());
+      const now = DateTime.now();
+      const diff = Interval.fromDateTimes(newDate, now);
+      console.log("diff", diff.length("days"));
 
-    const diff2 = DateTime.now().diff(newDate, 'days').days
+      const diff2 = DateTime.now().diff(newDate, "days").days;
 
-    console.log('diff2', diff2)
-    const nextAp = parseInt(newDate.diff(now, ["days"]).toString()!) 
-    console.log('nextAp', nextAp)
-    setNextAppointment(nextAp > 0 ? nextAp : 0);
-  }, [setNextAppointment,nextAppointment],);
+      console.log("diff2", diff2);
+      const nextAp = parseInt(newDate.diff(now, ["days"]).toString()!);
+      console.log("nextAp", nextAp);
+      setNextAppointment(nextAp > 0 ? nextAp : 0);
+    },
+    [setNextAppointment, nextAppointment]
+  );
 
   useEffect(() => {
-    fetchValue(`${serverLink}/patients/count`, setPatientsCount);
     fetchValue(`${serverLink}/appointments/last`, handleDate);
     updateTable();
   }, []);

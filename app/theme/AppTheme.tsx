@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import type { ThemeOptions } from '@mui/material/styles';
 import { colorSchemes, typography, shadows, shape } from './themePrimitives';
+import type {} from '@mui/x-charts/themeAugmentation';
 
 interface AppThemeProps {
   children: React.ReactNode;
@@ -23,7 +24,14 @@ export default function AppTheme(props: AppThemeProps) {
           typography,
           shadows,
           shape,
-          components: {
+          components: { MuiChartsAxis: {
+            styleOverrides: {
+              //@ts-ignore
+              tick: {
+                stroke: '#006BD6',
+              },
+            },
+          },
             ...themeComponents,
           },
         });

@@ -3,6 +3,7 @@ import { green, pink } from "@mui/material/colors";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import { RedirectButton } from "~/sharedComponents/RedirectButton";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export const LoginContent = () => {
   return (
@@ -30,7 +31,7 @@ export const LoginContent = () => {
           >
             <Grid alignItems={"center"} justifyItems={"center"} size={6}>
               <Avatar sx={{ bgcolor: green[500], width: 56, height: 56 }}>
-                <PageviewIcon />
+                <AccountCircleIcon />
               </Avatar>
               <br />
               <RedirectButton path="/doc/dashboard" text="Login Doctor" />

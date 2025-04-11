@@ -25,3 +25,10 @@ export interface Appointment {
   patient?: Patient;
   date: string;
 }
+
+export interface CMAS {
+    cmasId: string;
+    date: string;
+    score: number;
+    patient: Patient;
+}
