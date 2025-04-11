@@ -7,4 +7,5 @@ export default [
   route("demo/camera", "routes/demo/camera.tsx"),
   route("doc/patients/:patientId", "routes/patientDetail.tsx"),
   route("doc/patients/:patientId/evaluations", "routes/evaluations.tsx"),
+  route("doc/patients/:patientId/labResults", "routes/labResult.tsx"),
 ] satisfies RouteConfig;

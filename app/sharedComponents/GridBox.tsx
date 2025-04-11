@@ -11,6 +11,7 @@ export const GridBox = ({ children, size = 4, ...props }: GridBoxProps) => {
       <Box
         width={"100%"}
         className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4 "
+        alignItems={"center"} justifyItems={"center"}
       >
         {children}
       </Box>

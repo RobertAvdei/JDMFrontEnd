@@ -4,7 +4,7 @@ import { EvaluationsContent } from "~/evaluations/EvaluationsContent";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Login" },
+    { title: "Evaluation" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }

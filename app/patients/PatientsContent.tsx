@@ -4,7 +4,7 @@ import {
   type GridColDef,
   type GridRowId,
 } from "@mui/x-data-grid";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DataGridComponent } from "~/sharedComponents/DataGridComponent";
 import { GridBox } from "~/sharedComponents/GridBox";
 import { NumberDisplay } from "~/sharedComponents/NumberDisplay";
@@ -13,27 +13,48 @@ import { useNavigate } from "react-router";
 import { FloatingButton } from "~/sharedComponents/FloatingButton";
 import { PatientDialog } from "./PatientDialog";
 import { fetchValue, postValue } from "~/constants/utils";
-import type { Patient } from "~/constants/interfaces";
+import type { Appointment, Patient } from "~/constants/interfaces";
+import { DateTime, Interval } from 'luxon'
 
 export const PatientsContent = () => {
   const [rows, setRows] = useState([] as Patient[]);
-  const [patientsCount, setPatientsCount] = useState(0)
-  const [showDialog, setShowDialog] = useState(false)
+  const [patientsCount, setPatientsCount] = useState(0);
+  const [nextAppointment, setNextAppointment] = useState(7); // TEST
+  const [showDialog, setShowDialog] = useState(false);
   const serverLink = import.meta.env.VITE_SERVER_LINK;
 
   const navigate = useNavigate();
 
   const patientDashboard = [
     { title: "Total Patients", content: `Patients`, number: patientsCount },
-    { title: "Next Appointment", content: `Days`, number: 55 },
+    { title: "Next Appointment", content: `Days`, number: nextAppointment },
   ];
 
   const updateTable = () => {
     fetchValue(`${serverLink}/patients`, setRows);
   };
+  
+
+  //@TODO
+  const handleDate =  useCallback( (ap: Appointment) => {
+    console.log('ap', ap)
+    const newDate =  DateTime.fromFormat(ap.date,"DD'-'LL'-'yyyy''HH':'mm") 
+    console.log('newDate',newDate.toString())
+    const now = DateTime.now()
+    const diff = Interval.fromDateTimes(newDate, now);
+    console.log('diff', diff.length('days'))
+
+    const diff2 = DateTime.now().diff(newDate, 'days').days
+
+    console.log('diff2', diff2)
+    const nextAp = parseInt(newDate.diff(now, ["days"]).toString()!) 
+    console.log('nextAp', nextAp)
+    setNextAppointment(nextAp > 0 ? nextAp : 0);
+  }, [setNextAppointment,nextAppointment],);
 
   useEffect(() => {
     fetchValue(`${serverLink}/patients/count`, setPatientsCount);
+    fetchValue(`${serverLink}/appointments/last`, handleDate);
     updateTable();
   }, []);
 
@@ -76,9 +97,9 @@ export const PatientsContent = () => {
     setShowDialog(false);
   };
 
-  const handleOnSubmit = (value: any) =>{
-      postValue(`${serverLink}/users`,value,updateTable)
-  }
+  const handleOnSubmit = (value: any) => {
+    postValue(`${serverLink}/users`, value, updateTable);
+  };
 
   return (
     <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
