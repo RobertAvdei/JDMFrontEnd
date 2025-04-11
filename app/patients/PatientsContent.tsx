@@ -4,22 +4,38 @@ import {
   type GridColDef,
   type GridRowId,
 } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataGridComponent } from "~/sharedComponents/DataGridComponent";
 import { GridBox } from "~/sharedComponents/GridBox";
 import { NumberDisplay } from "~/sharedComponents/NumberDisplay";
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import { useNavigate } from "react-router";
+import { FloatingButton } from "~/sharedComponents/FloatingButton";
+import { PatientDialog } from "./PatientDialog";
+import { fetchValue, postValue } from "~/constants/utils";
+import type { Patient } from "~/constants/interfaces";
 
 export const PatientsContent = () => {
-  const [rows, setRows] = useState([{ id: 1, name: "Test" }]);
+  const [rows, setRows] = useState([] as Patient[]);
+  const [patientsCount, setPatientsCount] = useState(0)
+  const [showDialog, setShowDialog] = useState(false)
+  const serverLink = import.meta.env.VITE_SERVER_LINK;
 
   const navigate = useNavigate();
 
   const patientDashboard = [
-    { title: "Total Patients", content: `Patients`, number: 55 },
-    { title: "Test Title", content: `Test`, number: 55 },
+    { title: "Total Patients", content: `Patients`, number: patientsCount },
+    { title: "Next Appointment", content: `Days`, number: 55 },
   ];
+
+  const updateTable = () => {
+    fetchValue(`${serverLink}/patients`, setRows);
+  };
+
+  useEffect(() => {
+    fetchValue(`${serverLink}/patients/count`, setPatientsCount);
+    updateTable();
+  }, []);
 
   const handleEditClick = (id: GridRowId, row: any) => () => {
     navigate(`/doc/patients/${id}`);
@@ -27,14 +43,13 @@ export const PatientsContent = () => {
 
   const columns: GridColDef<(typeof rows)[number]>[] = [
     {
-      field: "id",
+      field: "patientId",
       headerName: "Id ",
       minWidth: 150,
     },
     {
       field: "name",
       headerName: "Name",
-      // editable: true,
       minWidth: 550,
     },
     {
@@ -57,6 +72,14 @@ export const PatientsContent = () => {
     },
   ];
 
+  const handleDialogClose = () => {
+    setShowDialog(false);
+  };
+
+  const handleOnSubmit = (value: any) =>{
+      postValue(`${serverLink}/users`,value,updateTable)
+  }
+
   return (
     <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
       <div className="max-w-[900px] w-full space-y-6 px-4">
@@ -74,18 +97,24 @@ export const PatientsContent = () => {
               <NumberDisplay {...item} />
             </GridBox>
           ))}
-          {/* <GridBox size={6}> <NumberDisplay {...{ title: "Test Title", content: `Test`, number: 55 }}/></GridBox>
-              <GridBox size={6}><NumberDisplay {...{ title: "Test Title", content: `Test`, number: 55 }}/></GridBox> */}
           <Grid size={12}>
             <DataGridComponent
               rows={rows}
               columns={columns}
-              getRowId={(row) => row.id}
+              getRowId={(row) => row.patientId}
             />
           </Grid>
-          {/* <GridBox size={12}> <NumberDisplay {...{ title: "Test Title", content: `Test`, number: 55 }}/></GridBox> */}
         </Grid>
       </div>
+      <FloatingButton
+        onClick={() => setShowDialog(true)}
+        text="Add new Patient"
+      />
+      <PatientDialog
+        open={showDialog}
+        handleClose={handleDialogClose}
+        onSubmit={handleOnSubmit}
+      />
     </div>
   );
 };

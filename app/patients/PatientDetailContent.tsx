@@ -1,5 +1,6 @@
 import { Grid, Typography } from "@mui/material";
 import { useParams } from "react-router";
+import { FloatingButton } from "~/sharedComponents/FloatingButton";
 import { GridBox } from "~/sharedComponents/GridBox";
 import { NumberDisplay } from "~/sharedComponents/NumberDisplay";
 
@@ -9,7 +10,7 @@ export const PatientDetailContent = () => {
   const patientDashboard = [
     { title: "Next Appointment", content: `Days`, number: 10 },
     { title: "Patient Name", content: `Test`, number: 0, value: "Mario Rossi" },
-    { title: "Patient ID", content: ``, number: parseInt(id!) },
+    { title: "Patient ID", content: ``, number: 0, value:id },
   ];
 
   return (
@@ -34,7 +35,7 @@ export const PatientDetailContent = () => {
             return (
               <GridBox size={4} key={index}>
                 <p className="text-center">{item.title}</p>
-                <Typography variant="h2" className="text-center">
+                <Typography variant={item.value.length >20? 'h5' : "h2"} className="text-center">
                   {item.value}
                 </Typography>
               </GridBox>
@@ -52,6 +53,10 @@ export const PatientDetailContent = () => {
           </GridBox>
         </Grid>
       </div>
+      <FloatingButton
+        onClick={() => console.log("Clicked")}
+        text="Assign Exercises"
+      />
     </div>
   );
 };

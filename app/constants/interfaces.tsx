@@ -1,20 +1,8 @@
 
 
-export interface User {
-    userID: number,
+export interface Patient {
+    patientId: number,
     age: number,
-    gender: string
+    name: string
 }
 
-export interface Book {
-    bookID: number,
-    bookName: string
-}
-
-export interface ReadingHabits {
-    habitID: number,
-    pagesRead: number,
-    submissionMoment: string,
-    book: Book,
-    user: User
-}
